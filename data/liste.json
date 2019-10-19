@@ -1,0 +1,17 @@
+[
+    {
+        "nom": "Dupont",
+        "prenom": "Jacques",
+        "mail": "Pandas Roux"
+    },
+    {
+        "nom": "Martin",
+        "prenom": "Thibaut",
+        "mail": "Pandas Roux"
+    },
+    {
+        "nom": "Ribet",
+        "prenom": "Jean-paul",
+        "mail": "Pandas vert"
+    }
+]
