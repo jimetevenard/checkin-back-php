@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset='utf-8'>
-    <title>Page Title</title>
+    <title>Envoi d'une liste</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="style.css" />
 </head>
-<body>
-    <h1>Upload !</h1>
 
-    <form method="POST" enctype="multipart/form-data" action="upload-liste.php">
-        <input type="file" name="fichier">
-        <input type="submit" value="Envoyer">
-    </form>
+<body>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Envoyer un fichier</h5>
+            <p class="card-text">Selectionner une liste à envoyer (Format Excel <i>.xlsx</i>).</p>
+            <form method="POST" enctype="multipart/form-data" action="upload-liste.php">
+                <div class="form-group">
+                    <label for="fichier">Fichier de liste :</label>
+                    <input class="form-control" type="file" name="fichier">
+                </div>
+                <button type="submit" class="btn btn-primary">Envoyer</button>
+            </form>
+        </div>
+    </div>
 </body>
+
 </html>
