@@ -8,3 +8,11 @@ body {
     position: absolute;
     right: 10px;
   }
+  div.card {
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+
+  div[data-jim-active="false"]{
+      display: none;
+  }
