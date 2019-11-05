@@ -24,7 +24,8 @@
 
 		private $Options = array(
 			'TempDir' => '',
-			'ReturnDateTimeObjects' => false
+			'ReturnDateTimeObjects' => false,
+			'ForceDateFormat' => 'Y-m-d H:i:s'
 		);
 
 		private static $RuntimeInfo = array(
@@ -278,7 +279,7 @@
 						}
 					}
 				}
-				
+
 				if ($this -> StylesXML -> numFmts && $this -> StylesXML -> numFmts -> numFmt)
 				{
 					foreach ($this -> StylesXML -> numFmts -> numFmt as $Index => $NumFmt)
@@ -363,29 +364,36 @@
 		 *
 		 * @return array List of sheets (key is sheet index, value is name)
 		 */
-		public function Sheets()
-		{
-			if ($this -> Sheets === false)
-			{
-				$this -> Sheets = array();
-				foreach ($this -> WorkbookXML -> sheets -> sheet as $Index => $Sheet)
-				{
-					$Attributes = $Sheet -> attributes('r', true);
-					foreach ($Attributes as $Name => $Value)
-					{
-						if ($Name == 'id')
-						{
-							$SheetID = (int)str_replace('rId', '', (string)$Value);
-							break;
-						}
-					}
+        public function Sheets()
+        {
+            if ($this->Sheets === false) {
+                $this->Sheets = array();
+                foreach ($this->WorkbookXML->sheets->sheet as $Index => $Sheet) {
+                    $AttributesWithPrefix = $Sheet -> attributes('r', true);
+                    $Attributes = $Sheet -> attributes();
 
-					$this -> Sheets[$SheetID] = (string)$Sheet['name'];
-				}
-				ksort($this -> Sheets);
-			}
-			return array_values($this -> Sheets);
-		}
+                    $rId = 0;
+                    $sheetId = 0;
+
+                    foreach ($AttributesWithPrefix as $Name => $Value) {
+                        if ($Name === 'id') {
+                            $rId = (int)str_replace('rId', '', (string)$Value);
+                            break;
+                        }
+                    }
+                    foreach ($Attributes as $Name => $Value) {
+                        if ($Name === 'sheetId') {
+                            $sheetId = (int)$Value;
+                            break;
+                        }
+                    }
+
+                    $this -> Sheets[min($rId, $sheetId)] = (string)$Sheet['name'];
+                }
+                ksort($this -> Sheets);
+            }
+            return array_values($this -> Sheets);
+        }
 
 		/**
 		 * Changes the current sheet in the file to another
@@ -549,7 +557,7 @@
 					else
 					{
 						$this -> SSOpen = true;
-	
+
 						if ($this -> SharedStringIndex < $Index)
 						{
 							$this -> SSOpen = false;
@@ -662,7 +670,7 @@
 				{
 					$Sections = explode(';', $Format['Code']);
 					$Format['Code'] = $Sections[0];
-	
+
 					switch (count($Sections))
 					{
 						case 2:
@@ -831,7 +839,11 @@
 
 					if (!$this -> Options['ReturnDateTimeObjects'])
 					{
-						$Value = $Value -> format($Format['Code']);
+						if ($this->Options['ForceDateFormat']) {
+							$Value = $Value->format($this->Options['ForceDateFormat']);
+						} else {
+							$Value = $Value->format($Format['Code']);
+						}
 					}
 					else
 					{
@@ -866,7 +878,7 @@
 						$AdjDecimalDivisor = $DecimalDivisor/$GCD;
 
 						if (
-							strpos($Format['Code'], '0') !== false || 
+							strpos($Format['Code'], '0') !== false ||
 							strpos($Format['Code'], '#') !== false ||
 							substr($Format['Code'], 0, 3) == '? ?'
 						)
@@ -913,7 +925,7 @@
 						$Value = preg_replace('', $Format['Currency'], $Value);
 					}
 				}
-				
+
 			}
 
 			return $Value;
@@ -937,10 +949,10 @@
 		}
 
 		// !Iterator interface methods
-		/** 
+		/**
 		 * Rewind the Iterator to the first element.
 		 * Similar to the reset() function for arrays in PHP
-		 */ 
+		 */
 		public function rewind()
 		{
 			// Removed the check whether $this -> Index == 0 otherwise ChangeSheet doesn't work properly
@@ -980,10 +992,10 @@
 			return $this -> CurrentRow;
 		}
 
-		/** 
-		 * Move forward to next element. 
-		 * Similar to the next() function for arrays in PHP 
-		 */ 
+		/**
+		 * Move forward to next element.
+		 * Similar to the next() function for arrays in PHP
+		 */
 		public function next()
 		{
 			$this -> Index++;
@@ -1117,23 +1129,23 @@
 			return $this -> CurrentRow;
 		}
 
-		/** 
+		/**
 		 * Return the identifying key of the current element.
 		 * Similar to the key() function for arrays in PHP
 		 *
 		 * @return mixed either an integer or a string
-		 */ 
+		 */
 		public function key()
 		{
 			return $this -> Index;
 		}
 
-		/** 
+		/**
 		 * Check if there is a current element after calls to rewind() or next().
 		 * Used to check if we've iterated to the end of the collection
 		 *
 		 * @return boolean FALSE if there's nothing more to iterate over
-		 */ 
+		 */
 		public function valid()
 		{
 			return $this -> Valid;
