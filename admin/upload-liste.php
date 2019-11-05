@@ -103,8 +103,16 @@ try {
             $firstPassed = true;
         } else {
             try {
+                $ok = true;
+
                 $nom = $Row[$indexNom];
+                if($nom === null || strlen($nom) == 0) { $ok = false; }
+
                 $prenom = $Row[$indexPrenom];
+                if($prenom === null || strlen($prenom) == 0) { $ok = false; }
+
+                if($ok === false){ throw new Exception('Ligne invalide'); }
+
                 $mail = $indexMail > -1 ? $Row[$indexMail] : '';
 
                 array_push($liste,[
@@ -113,7 +121,7 @@ try {
                     "mail" => $mail
                 ]);
             } catch(Exception $e) {
-                array_push($result['warnings'], 'Erreur dans la lecture de la ligne ' . var_dump($Row));
+                array_push($result['warnings'], 'Erreur dans la lecture de la ligne ' . var_export($Row,true));
             }
             
         }
