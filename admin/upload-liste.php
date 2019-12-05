@@ -58,11 +58,11 @@ $result = [
 
 try {
 
-    // TODO : Définir un nom $fileName pour le ficheir
-    $fileName = 'upload_' . time() . '.xlsx';
+    $timestamp = time();
+    $fileName = 'upload_' . $timestamp . '.xlsx';
 
-    // TODO : Recevoir le fichier en POST
-    // TODO : copier le fichier dans data/files/{$fileName}.xlsx
+    // Reception du fichier en POST
+    // Copie du fichier dans data/files/{$fileName}.xlsx
     $uploadfile = dirname(dirname(__FILE__)) . '/data/files/' . $fileName;
 
     if(substr($_FILES['fichier']['name'], -5, 5 ) !== '.xlsx'){
@@ -86,7 +86,8 @@ try {
     }
 
     $liste = [];
-
+    $index = 0;
+    
     $firstPassed = false;
     foreach ($Reader as $Row) {
         if(!$firstPassed){
@@ -114,13 +115,17 @@ try {
                 if($ok === false){ throw new Exception('Ligne invalide'); }
 
                 $mail = $indexMail > -1 ? $Row[$indexMail] : '';
-
+                
                 array_push($liste,[
                     "nom" => $nom,
                     "prenom" => $prenom,
-                    "mail" => $mail
+                    "mail" => $mail,
+                    "id" => $index
                 ]);
-            } catch(Exception $e) {
+                
+                $index++;
+
+             } catch(Exception $e) {
                 array_push($result['warnings'], 'Erreur dans la lecture de la ligne ' . var_export($Row,true));
             }
             
@@ -129,7 +134,11 @@ try {
     }
 
     // Ecrire dans data/liste.js
-    $listeJson = json_encode($liste);
+    $wrappedListe = [
+      "id" => $timestamp,
+      "guests" => $liste
+    ];
+    $listeJson = json_encode($wrappedListe);
     $listeFilePath = dirname(dirname(__FILE__)) . '/data/liste.json';
     $listeWrittenOk = file_put_contents($listeFilePath,$listeJson);
     if($listeWrittenOk === false){
@@ -137,7 +146,7 @@ try {
     }
 
     if($listeWrittenOk === false){
-        throw new Exception('Erreur lors de l\'écriture du fichier JSON');
+      throw new Exception('Erreur lors de l\'écriture du fichier JSON');
     }
 
     $result['status'] = 'OK';
