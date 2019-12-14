@@ -59,13 +59,14 @@ $result = [
 try {
 
     $timestamp = time();
+    $initialFileName = $_FILES['fichier']['name'];
     $fileName = 'upload_' . $timestamp . '.xlsx';
 
     // Reception du fichier en POST
     // Copie du fichier dans data/files/{$fileName}.xlsx
     $uploadfile = dirname(dirname(__FILE__)) . '/data/files/' . $fileName;
 
-    if(substr($_FILES['fichier']['name'], -5, 5 ) !== '.xlsx'){
+    if(substr($initialFileName, -5, 5 ) !== '.xlsx'){
         throw new Exception('Format de fichier incorrect : doit être un fichier Excel (.xlsx)');
     }
 
@@ -136,6 +137,7 @@ try {
     // Ecrire dans data/liste.js
     $wrappedListe = [
       "id" => $timestamp,
+      "file" => $initialFileName,
       "guests" => $liste
     ];
     $listeJson = json_encode($wrappedListe);
@@ -156,8 +158,9 @@ try {
     $result['status'] = 'KO';
 }
 
-
 // Output du tableau de résultat (+ log)
+// =====================================
+$result['filename'] = $initialFileName;
 $resultJSon = json_encode($result);
 try {
     file_put_contents($uploadfile . '.logs.json', $resultJSon);
