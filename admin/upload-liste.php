@@ -46,6 +46,26 @@ function trouverColomneMail(array $firstRow){
     return -1;
 }
 
+/**
+ * Remplace la chaine $mail par le pattern suivant :
+ * m@<Empreinte SHA1 du mail>
+ * 
+ * - La fonction ne s'applique que siun arobase est présent
+ * - Le pattern de sortie contien un arobase.
+ * 
+ * => Ces deux points servent à Garder la distinction entre les
+ *      inscrits et les invités
+ * 
+ */
+function cacherMail($mail){
+    if(strpos($mail,'@') !== false){
+        return 'm@' . sha1($mail);
+    } else {
+        return $mail;
+    }
+    
+}
+
 // ================
 // GO !!!!!!!!!!!!!
 // ================
@@ -115,7 +135,7 @@ try {
 
                 if($ok === false){ throw new Exception('Ligne invalide'); }
 
-                $mail = $indexMail > -1 ? $Row[$indexMail] : '';
+                $mail = $indexMail > -1 ? cacherMail($Row[$indexMail]) : '';
                 
                 array_push($liste,[
                     "nom" => $nom,
