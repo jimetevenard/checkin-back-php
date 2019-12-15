@@ -1,17 +1,36 @@
-[
-    {
-        "nom": "Dupont",
-        "prenom": "Jacques",
-        "mail": "Pandas Roux"
-    },
-    {
-        "nom": "Martin",
-        "prenom": "Thibaut",
-        "mail": "Pandas Roux"
-    },
-    {
-        "nom": "Ribet",
-        "prenom": "Jean-paul",
-        "mail": "Pandas vert"
-    }
-]
+{
+    "id": 1576410463,
+    "file": "test-liste-cour.xlsx",
+    "guests": [
+        {
+            "nom": "Benalla",
+            "prenom": "Alexandre",
+            "mail": "aaaaa",
+            "id": 0
+        },
+        {
+            "nom": "Etevenard",
+            "prenom": "Jim",
+            "mail": "m@d8828f5c1a4230dba8a3cb59692aa4172a57d9c7",
+            "id": 1
+        },
+        {
+            "nom": "Dujardin",
+            "prenom": "Pongo",
+            "mail": "m@d8828f5c1a4230dba8a3cb59692aa4172a57d9c7",
+            "id": 2
+        },
+        {
+            "nom": "Martin",
+            "prenom": "Julie",
+            "mail": "m@688211f9ce658c88bc5379d107231a2bf6838c0d",
+            "id": 3
+        },
+        {
+            "nom": "Fernadez",
+            "prenom": "Jose",
+            "mail": "ffffffffff",
+            "id": 4
+        }
+    ]
+}
